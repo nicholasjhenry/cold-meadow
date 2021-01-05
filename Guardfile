@@ -15,6 +15,13 @@ directories %w(app lib config spec) \
 #
 # and, you'll have to watch "config/Guardfile" instead of "Guardfile"
 
+guard :shell do
+  watch(%r{^(app|spec|)/.+/.+\.rb$}) do |m|
+    puts "Formatting #{m[0]}"
+    `bundle exec rbprettier --write #{m[0]}`
+  end
+end
+
 # Note: The cmd option is now required due to the increasing number of ways
 #       rspec may be run, below are examples of the most common uses.
 #  * bundler: 'bundle exec rspec'
@@ -24,7 +31,7 @@ directories %w(app lib config spec) \
 #  * zeus: 'zeus rspec' (requires the server to be started separately)
 #  * 'just' rspec: 'rspec'
 
-guard :rspec, cmd: "bin/rspec" do
+guard :rspec, cmd: "bin/rspec", wait: 100 do
   require "guard/rspec/dsl"
   dsl = Guard::RSpec::Dsl.new(self)
 
