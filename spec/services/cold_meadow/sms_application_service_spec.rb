@@ -2,6 +2,8 @@ require "rails_helper"
 
 RSpec.describe ColdMeadow::SmsApplicationService do
   describe "sending a message" do
+    before { ActiveJob::Base.queue_adapter = :test }
+
     it "handles valid params" do
       message_params = {
         uuid: "bafb6c01-1171-4f75-b488-c538c5aacd5a",
@@ -16,7 +18,8 @@ RSpec.describe ColdMeadow::SmsApplicationService do
       service = ColdMeadow::SmsApplicationService.new
       command = service.send_message(message_params)
 
-      expect(command)
+      expect(ColdMeadow::MessageJob).to have_been_enqueued.exactly(:twice)
+      expect(command).to be_valid
       expect(ColdMeadow::Message.count).to eq(2)
     end
 

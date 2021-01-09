@@ -5,7 +5,10 @@ class ColdMeadow::SmsApplicationService
     command = ColdMeadow::SendMessageCommand.new(params)
 
     if command.valid?
-      command.recipients.map { |recipient| create_message(recipient, command) }
+      command.recipients.map do |recipient|
+        message = create_message(recipient, command)
+        ColdMeadow::MessageJob.perform_later(message)
+      end
     end
 
     command
