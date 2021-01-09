@@ -1,6 +1,9 @@
 class ColdMeadow::SmsController < ApplicationController
   def create
-    if ColdMeadow::SmsApplicationService.send_message(message_params)
+    service = ColdMeadow::SmsApplicationService.new
+    command = service.send_message(message_params)
+
+    if command.valid?
       render json: { status: :accepted }, status: :accepted
     else
       # TODO: handle error path
