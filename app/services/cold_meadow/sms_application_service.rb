@@ -6,18 +6,20 @@ class ColdMeadow::SmsApplicationService
   end
 
   def send_message(params)
-    params.fetch(:to).map { |recipient| create_message(recipient, params) }
+    command = ColdMeadow::SendMessageCommand.new(params)
+    command.to.map { |recipient| create_message(recipient, command) }
+
     true
   end
 
   private
 
-  def create_message(recipient, params)
+  def create_message(recipient, command)
     ColdMeadow::Message.create!(
-      uuid: params[:uuid],
+      uuid: command.uuid,
       to: recipient[:phone_number],
-      from: params[:from][:personal_name],
-      body: params[:body],
+      from: command.from[:personal_name],
+      body: command.body,
       state: :pending
     )
   end
