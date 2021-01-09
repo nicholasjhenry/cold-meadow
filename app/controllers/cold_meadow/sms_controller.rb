@@ -6,7 +6,8 @@ class ColdMeadow::SmsController < ApplicationController
     if command.valid?
       render json: { status: :accepted }, status: :accepted
     else
-      render json: { status: :error }, status: :unprocessable_entity
+      render json: { data: command, status: :error },
+             status: :unprocessable_entity
     end
   end
 
