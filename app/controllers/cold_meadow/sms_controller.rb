@@ -12,6 +12,11 @@ class ColdMeadow::SmsController < ApplicationController
   def message_params
     params
       .require(:message)
-      .permit(:uuid, :body, from: [:personal_name], to: [:phone_number])
+      .permit(
+        :uuid,
+        :body,
+        sender: [:personal_name],
+        recipients: [:phone_number]
+      )
   end
 end

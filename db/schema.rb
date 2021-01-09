@@ -17,8 +17,8 @@ ActiveRecord::Schema.define(version: 2021_01_09_153740) do
 
   create_table "cold_meadow_messages", force: :cascade do |t|
     t.binary "uuid", null: false
-    t.string "to", null: false
-    t.string "from", null: false
+    t.string "recipient_phone_number", null: false
+    t.string "sender_personal_name", null: false
     t.string "body", null: false
     t.datetime "sent_at"
     t.string "error_code"

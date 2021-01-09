@@ -1,6 +1,6 @@
 class ColdMeadow::SendMessageCommand
   include ActiveModel::Model
 
-  attr_accessor :uuid, :to, :from, :body
-  validates :uuid, :to, :from, :body, presence: true
+  attr_accessor :uuid, :recipients, :sender, :body
+  validates :uuid, :recipients, :sender, :body, presence: true
 end
