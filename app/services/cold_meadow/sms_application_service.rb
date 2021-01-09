@@ -17,7 +17,7 @@ class ColdMeadow::SmsApplicationService
   def create_message(recipient, command)
     ColdMeadow::Message.create!(
       uuid: command.uuid,
-      recipient_phone_number: recipient[:phone_number],
+      recipient_phone_number: recipient.phone_number,
       sender_personal_name: command.sender[:personal_name],
       body: command.body,
       state: :pending
