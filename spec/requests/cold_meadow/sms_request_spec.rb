@@ -5,7 +5,7 @@ RSpec.describe "ColdMeadow::Sms", type: :request do
     headers = { "content_type" => "application/json" }
 
     message_params = {
-      id: "bafb6c01-1171-4f75-b488-c538c5aacd5a",
+      uuid: "bafb6c01-1171-4f75-b488-c538c5aacd5a",
       to: [{ phone_number: "+15141234567" }, { phone_number: "+15141238950" }],
       from: { personal_name: "Jane Smith" },
       body: "Hello world!"
