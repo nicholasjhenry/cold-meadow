@@ -7,9 +7,12 @@ class ColdMeadow::SmsApplicationService
 
   def send_message(params)
     command = ColdMeadow::SendMessageCommand.new(params)
-    command.recipients.map { |recipient| create_message(recipient, command) }
 
-    true
+    if command.valid?
+      command.recipients.map { |recipient| create_message(recipient, command) }
+    end
+
+    command
   end
 
   private
