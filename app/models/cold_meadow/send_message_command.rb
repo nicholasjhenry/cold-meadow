@@ -11,4 +11,8 @@ class ColdMeadow::SendMessageCommand
       @recipients.push(recipient)
     end
   end
+
+  def sender=(sender_params)
+    @sender = ColdMeadow::Sender.new(sender_params)
+  end
 end
