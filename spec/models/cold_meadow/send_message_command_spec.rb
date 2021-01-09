@@ -3,9 +3,7 @@ require "rails_helper"
 RSpec.describe ColdMeadow::SendMessageCommand, type: :model do
   describe "validation" do
     context "given invalid params" do
-      it "should be invalid" do
-        expect(subject).to be_invalid
-      end
+      it { is_expected.to be_invalid }
     end
 
     context "given valid params" do
@@ -21,9 +19,7 @@ RSpec.describe ColdMeadow::SendMessageCommand, type: :model do
         )
       end
 
-      it "should be valid" do
-        expect(subject).to be_valid
-      end
+      it { is_expected.to be_valid }
     end
   end
 end
