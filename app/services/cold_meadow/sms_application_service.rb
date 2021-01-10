@@ -51,11 +51,11 @@ class ColdMeadow::SmsApplicationService
   end
 
   def extract_ids(result)
-    result.to_a.map { |key, id| id }
+    result.to_a.map { |row| row.fetch("id") }
   end
 
   def process_messages_later(ids)
-    ids.each { |id| ColdMeadow::MessageJob.perform_later(ids) }
+    ids.each { |id| ColdMeadow::MessageJob.perform_later(id) }
   end
 
   # Perform an atomic update to prevent race conditions and opening
