@@ -73,5 +73,26 @@ RSpec.describe ColdMeadow::SmsApplicationService do
       expect(message.state).to eq("sent")
       expect(message.updated_at).not_to eq(original_updated_at)
     end
+
+    it "handles a sent message" do
+      message =
+        ColdMeadow::Message.create!(
+          uuid: "bafb6c01-1171-4f75-b488-c538c5aacd5a",
+          recipient_phone_number: "+15141234567",
+          sender_personal_name: "Jane Smith",
+          body: "Hello world!",
+          state: :sent
+        )
+
+      params = { message_id: message.id.to_s }
+
+      service = ColdMeadow::SmsApplicationService.new
+      command = service.process_message(params)
+
+      original_updated_at = message.updated_at
+      message.reload
+      expect(message.state).to eq("sent")
+      expect(message.updated_at).to eq(original_updated_at)
+    end
   end
 end

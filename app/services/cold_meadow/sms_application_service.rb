@@ -16,14 +16,15 @@ class ColdMeadow::SmsApplicationService
 
   def process_message(params)
     command = ColdMeadow::ProcessMessageCommand.new(params)
+    return command unless command.valid?
 
-    if command.valid?
-      message = mark_message_as_processing(command)
-      try_process_message(message)
+    message = mark_message_as_processing(command)
+    return command unless message.present?
 
-      # TODO: error handling
-      mark_message_as_sent(message)
-    end
+    try_process_message(message)
+
+    # TODO: error handling
+    mark_message_as_sent(message)
 
     command
   end
