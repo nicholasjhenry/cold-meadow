@@ -3,5 +3,5 @@ class ColdMeadow::Message < ApplicationRecord
     "cold_meadow_"
   end
 
-  enum state: %i[pending sent failed]
+  enum state: %i[pending processing sent failed]
 end

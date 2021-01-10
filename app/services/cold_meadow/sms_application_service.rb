@@ -14,6 +14,20 @@ class ColdMeadow::SmsApplicationService
     command
   end
 
+  def process_message(params)
+    command = ColdMeadow::ProcessMessageCommand.new(params)
+
+    if command.valid?
+      message = mark_message_as_processing(command)
+      try_process_message(message)
+
+      # TODO: error handling
+      mark_message_as_sent(message)
+    end
+
+    command
+  end
+
   private
 
   def build_message_data(command)
@@ -41,5 +55,27 @@ class ColdMeadow::SmsApplicationService
 
   def process_messages_later(ids)
     ids.each { |id| ColdMeadow::MessageJob.perform_later(ids) }
+  end
+
+  # Perform an atomic update to prevent race conditions and opening
+  # a database transaction while accessing an external API
+  def mark_message_as_processing(command)
+    number_rows_updated =
+      ColdMeadow::Message
+        .where(state: :pending, id: command.message_id)
+        .update_all(state: :processing, updated_at: Time.now.utc)
+
+    if number_rows_updated == 1
+      ColdMeadow::Message.find_by!(id: command.message_id, state: :processing)
+    end
+  end
+
+  def mark_message_as_sent(message)
+    message.update(state: :sent)
+  end
+
+  def try_process_message(command)
+    # TODO: Call Twilio
+    # https://www.twilio.com/docs/sms/quickstart/ruby
   end
 end
