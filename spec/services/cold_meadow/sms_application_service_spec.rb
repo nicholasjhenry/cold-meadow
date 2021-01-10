@@ -71,10 +71,11 @@ RSpec.describe ColdMeadow::SmsApplicationService do
       original_updated_at = message.updated_at
       message.reload
       expect(message.state).to eq("sent")
+      expect(message.sent_at).not_to be_nil
       expect(message.updated_at).not_to eq(original_updated_at)
     end
 
-    it "handles a sent message" do
+    it "handles a sent message idempotently" do
       message =
         ColdMeadow::Message.create!(
           uuid: "bafb6c01-1171-4f75-b488-c538c5aacd5a",

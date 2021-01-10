@@ -72,7 +72,7 @@ class ColdMeadow::SmsApplicationService
   end
 
   def mark_message_as_sent(message)
-    message.update(state: :sent)
+    message.update(state: :sent, sent_at: Time.now.utc)
   end
 
   def try_process_message(command)
