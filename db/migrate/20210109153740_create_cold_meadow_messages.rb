@@ -10,7 +10,9 @@ class CreateColdMeadowMessages < ActiveRecord::Migration[6.1]
       t.string :error_message
       t.integer :state, null: false
 
-      t.timestamps
+      t.timestamps default: -> { "CURRENT_TIMESTAMP" }
     end
+
+    add_index :cold_meadow_messages, [:uuid, :recipient_phone_number], unique: true
   end
 end

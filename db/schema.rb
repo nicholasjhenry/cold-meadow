@@ -24,8 +24,9 @@ ActiveRecord::Schema.define(version: 2021_01_09_153740) do
     t.string "error_code"
     t.string "error_message"
     t.integer "state", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", precision: 6, default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", precision: 6, default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.index ["uuid", "recipient_phone_number"], name: "index_cold_meadow_messages_on_uuid_and_recipient_phone_number", unique: true
   end
 
 end

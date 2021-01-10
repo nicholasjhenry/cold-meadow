@@ -6,8 +6,9 @@ class ColdMeadow::SmsApplicationService
 
     if command.valid?
       message_data = build_message_data(command)
-      ids = insert_messages!(message_data)
-      process_messages(ids)
+      result = insert_messages!(message_data)
+      ids = extract_ids(result)
+      process_messages_later(ids)
     end
 
     command
@@ -16,31 +17,29 @@ class ColdMeadow::SmsApplicationService
   private
 
   def build_message_data(command)
-    now = Time.now.utc
-
     command.recipients.map do |recipient|
       {
         uuid: command.uuid,
         recipient_phone_number: recipient.phone_number,
         sender_personal_name: command.sender.personal_name,
         body: command.body,
-        state: :pending,
-        created_at: now,
-        updated_at: now
+        state: :pending
       }
     end
   end
 
   def insert_messages!(data)
-    result = ColdMeadow::Message.insert_all!(data)
-    extract_ids(result)
+    ColdMeadow::Message.upsert_all(
+      data,
+      unique_by: %i[uuid recipient_phone_number]
+    )
   end
 
   def extract_ids(result)
-    result.rows.map { |row| row.first }
+    result.to_a.map { |key, id| id }
   end
 
-  def process_messages(ids)
-    ids.each { |id| ColdMeadow::MessageJob.perform_later(id) }
+  def process_messages_later(ids)
+    ids.each { |id| ColdMeadow::MessageJob.perform_later(ids) }
   end
 end
