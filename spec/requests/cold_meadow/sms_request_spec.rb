@@ -50,4 +50,34 @@ RSpec.describe "ColdMeadow::Sms", type: :request do
       expect(json_body["data"]).to have_key("errors")
     end
   end
+
+  describe "list messages" do
+    it "handles a valid uuid" do
+      headers = { "content_type" => "application/json" }
+
+      ColdMeadow::Message.create!(
+        uuid: "bafb6c01-1171-4f75-b488-c538c5aacd5b",
+        recipient_phone_number: "+15141234567",
+        sender_personal_name: "Jane Smith",
+        body: "Hello world!",
+        state: :pending
+      )
+
+      ColdMeadow::Message.create!(
+        uuid: "bafb6c01-1171-4f75-b488-c538c5aacd5b",
+        recipient_phone_number: "+15141238950",
+        sender_personal_name: "Jane Smith",
+        body: "Hello world!",
+        state: :pending
+      )
+
+      get "/cold_meadow/sms/",
+          params: { uuid: "bafb6c01-1171-4f75-b488-c538c5aacd5b" },
+          headers: headers
+
+      expect(response).to have_http_status(:ok)
+      body = JSON.parse(response.body)
+      expect(body.fetch("data").length).to eq(2)
+    end
+  end
 end

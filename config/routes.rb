@@ -2,6 +2,6 @@ Rails.application.routes.draw do
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 
   namespace :cold_meadow do
-    resources :sms, only: [:create]
+    resources :sms, only: [:create, :index]
   end
 end

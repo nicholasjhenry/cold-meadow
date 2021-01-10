@@ -11,6 +11,14 @@ class ColdMeadow::SmsController < ApplicationController
     end
   end
 
+  def index
+    uuid = params.fetch(:uuid)
+    service = ColdMeadow::SmsQueryService.new
+    messages = service.find_by(uuid: uuid)
+
+    render json: { data: messages }, status: :ok
+  end
+
   private
 
   def message_params
