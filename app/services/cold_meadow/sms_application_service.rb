@@ -1,5 +1,3 @@
-require "securerandom"
-
 class ColdMeadow::SmsApplicationService
   def send_message(params)
     command = ColdMeadow::SendMessageCommand.new(params)
