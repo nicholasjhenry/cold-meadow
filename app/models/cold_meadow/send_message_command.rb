@@ -15,4 +15,16 @@ class ColdMeadow::SendMessageCommand
   def sender=(sender_params)
     @sender = ColdMeadow::Sender.new(sender_params)
   end
+
+  def to_message_attrs
+    recipients.map do |recipient|
+      {
+        uuid: uuid,
+        recipient_phone_number: recipient.phone_number,
+        sender_personal_name: sender.personal_name,
+        body: body,
+        state: :pending
+      }
+    end
+  end
 end
