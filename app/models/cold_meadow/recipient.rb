@@ -9,5 +9,5 @@ class ColdMeadow::Recipient
 
   validates :phone_number,
             presence: true,
-            format: { with: NAIVE_E164_FORMAT, message: "Only letters allowed" }
+            format: { with: NAIVE_E164_FORMAT, message: "must be in E.164 format" }
 end
