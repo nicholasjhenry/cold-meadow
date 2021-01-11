@@ -44,7 +44,9 @@ class ColdMeadow::SmsApplicationService
   # Perform an atomic update to prevent race conditions and avoid performing
   # a database transaction while accessing an external API
   def flag_message_as_processing(command)
-    ColdMeadow::Message.find_and_flag_as_processing(command.message_id)
+    if ColdMeadow::Message.flag_as_processing(command.message_id)
+      ColdMeadow::Message.find_processing!(command.message_id)
+    end
   end
 
   def flag_message_as_sent(message)

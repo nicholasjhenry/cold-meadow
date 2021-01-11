@@ -11,13 +11,17 @@ class ColdMeadow::Message < ApplicationRecord
       extract_ids(result)
     end
 
-    def find_and_flag_as_processing(id)
+    def flag_as_processing(id)
       number_rows_updated =
         self
           .where(state: :pending, id: id)
           .update_all(state: :processing, updated_at: Time.now.utc)
 
-      find_by!(id: id, state: :processing) if number_rows_updated == 1
+      number_rows_updated == 1
+    end
+
+    def find_processing!(id)
+      find_by!(id: id, state: :processing)
     end
 
     private
