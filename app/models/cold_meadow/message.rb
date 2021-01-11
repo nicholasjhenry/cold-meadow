@@ -7,24 +7,17 @@ class ColdMeadow::Message < ApplicationRecord
 
   class << self
     def upsert_messages(attr)
-      result =
-        ColdMeadow::Message.upsert_all(
-          attr,
-          unique_by: %i[uuid recipient_phone_number]
-        )
-
+      result = upsert_all(attr, unique_by: %i[uuid recipient_phone_number])
       extract_ids(result)
     end
 
     def find_and_flag_as_processing(id)
       number_rows_updated =
-        ColdMeadow::Message
+        self
           .where(state: :pending, id: id)
           .update_all(state: :processing, updated_at: Time.now.utc)
 
-      if number_rows_updated == 1
-        ColdMeadow::Message.find_by!(id: id, state: :processing)
-      end
+      find_by!(id: id, state: :processing) if number_rows_updated == 1
     end
 
     private
