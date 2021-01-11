@@ -4,8 +4,8 @@ class ColdMeadow::SmsApplicationService
     return command unless command.valid?
 
     message_attrs = build_message_attrs(command)
-    ids = record_messages(message_attrs)
-    process_messages_later(ids)
+    message_ids = record_messages(message_attrs)
+    process_messages_later(message_ids)
 
     command
   end
@@ -35,8 +35,10 @@ class ColdMeadow::SmsApplicationService
     ColdMeadow::Message.upsert_messages(attrs)
   end
 
-  def process_messages_later(ids)
-    ids.each { |id| ColdMeadow::MessageJob.perform_later(id) }
+  def process_messages_later(message_ids)
+    message_ids.each do |message_id|
+      ColdMeadow::MessageJob.perform_later(message_id)
+    end
   end
 
   # Perform an atomic update to prevent race conditions and avoid performing
