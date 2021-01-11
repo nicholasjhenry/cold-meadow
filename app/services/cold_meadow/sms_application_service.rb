@@ -58,7 +58,7 @@ class ColdMeadow::SmsApplicationService
     ids.each { |id| ColdMeadow::MessageJob.perform_later(id) }
   end
 
-  # Perform an atomic update to prevent race conditions and opening
+  # Perform an atomic update to prevent race conditions and avoid performing
   # a database transaction while accessing an external API
   def mark_message_as_processing(command)
     number_rows_updated =
