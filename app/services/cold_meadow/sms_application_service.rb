@@ -14,13 +14,7 @@ class ColdMeadow::SmsApplicationService
     command = ColdMeadow::ProcessMessageCommand.new(params)
     return command unless command.valid?
 
-    message = flag_message_as_processing(command)
-    return command unless message.present?
-
-    try_process_message(message)
-
-    # TODO: error handling
-    flag_message_as_sent(message)
+    try_process_message(command)
 
     command
   end
@@ -41,20 +35,13 @@ class ColdMeadow::SmsApplicationService
     end
   end
 
-  # Perform an atomic update to prevent race conditions and avoid performing
-  # a database transaction while accessing an external API
-  def flag_message_as_processing(command)
-    if ColdMeadow::Message.flag_as_processing(command.message_id)
-      ColdMeadow::Message.find_processing!(command.message_id)
-    end
-  end
-
-  def flag_message_as_sent(message)
-    message.flag_as_sent
-  end
-
   def try_process_message(command)
-    # TODO: Call Twilio
-    # https://www.twilio.com/docs/sms/quickstart/ruby
+    # Perform an atomic update to prevent race conditions and avoid performing
+    # a database transaction while accessing an external API
+    ColdMeadow::Message.process(command.message_id) do |message|
+      # TODO: error handling
+      # TODO: Call Twilio
+      # https://www.twilio.com/docs/sms/quickstart/ruby
+    end
   end
 end
